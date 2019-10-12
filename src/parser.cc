@@ -313,6 +313,11 @@ istream& Instruction::read_att(istream& is) {
     expected_size = strtoull(comment.c_str() + size_pos + 5, NULL, 10);
   }
 
+  size_t size_pos_target = comment.find("TARGET=");
+  if(size_pos_target != string::npos) {
+    target_ = strtoull(comment.c_str() + size_pos_target + 7, NULL, 10);
+  }
+
   // See if we can match this up to an instruction
   auto data = att_table[opcode];
   std::vector<Entry> possible_encodings = data.second;

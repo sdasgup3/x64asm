@@ -17,7 +17,7 @@
 ifndef CXX
 	CXX=g++
 endif
-GCC=ccache ${CXX} -Werror -Wextra -Wall -Wfatal-errors -pedantic -Wno-unused-parameter -Wno-reorder -std=c++11 -fPIC
+GCC=ccache ${CXX} -Werror -Wextra -Wall -Wfatal-errors -pedantic -Wno-unused-parameter -Wno-reorder -std=c++11 -fPIC -O0 -g
 
 INC=-I./
 		

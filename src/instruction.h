@@ -117,10 +117,10 @@ private:
 
 public:
   /** Creates an instruction with no operands. */
-  Instruction(Opcode opcode) : opcode_(opcode), operands_{{}} {}
+  Instruction(Opcode opcode) : opcode_(opcode), operands_{{}}, target_(-1) {}
   /** Creates an instruction using initializer list syntax. */
   Instruction(Opcode opcode, const std::initializer_list<Operand>& operands) :
-    opcode_(opcode), operands_{{}} {
+    opcode_(opcode), operands_{{}}, target_(-1) {
     assert(operands.size() <= 4);
     std::copy(operands.begin(), operands.end(), operands_.begin());
     fix_operands_type();
@@ -128,7 +128,7 @@ public:
   /** Creates an instruction from an stl container of operands. */
   template <typename InItr>
   Instruction(Opcode opcode, InItr begin, InItr end) :
-    opcode_(opcode), operands_ {} {
+    opcode_(opcode), operands_ {}, target_(-1) {
     assert(end - begin <= 4);
     std::copy(begin, end, operands_.begin());
     fix_operands_type();
@@ -137,6 +137,11 @@ public:
   /** Returns the current opcode. */
   Opcode get_opcode() const {
     return opcode_;
+  }
+
+  /** Returns the target. */
+  uint64_t get_target() const {
+    return target_;
   }
   /** Sets the current opcode. */
   void set_opcode(Opcode o) {
@@ -766,6 +771,8 @@ private:
   Opcode opcode_;
   /** As many as four operands. */
   std::array<Operand, 4> operands_;
+  /** Instruction Target for jmp/jcc/call **/
+  uint64_t target_;
 
   // Helper function for read_att that uses the fact that
   // Instruction is a friend of Operand to do the dirty work.

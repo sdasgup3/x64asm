@@ -1,5 +1,5 @@
 CC  = g++ -std=c++0x
-OPT = -Werror -O3
+OPT = -Werror -O0 -g
 EX  = abi constants context dataflow functions hello linker
 
 all: $(EX)
