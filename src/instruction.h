@@ -117,10 +117,10 @@ private:
 
 public:
   /** Creates an instruction with no operands. */
-  Instruction(Opcode opcode) : opcode_(opcode), operands_{{}}, target_(-1) {}
+  Instruction(Opcode opcode) : opcode_(opcode), operands_{{}}, target_(-1), is_movabsq_(false) {}
   /** Creates an instruction using initializer list syntax. */
   Instruction(Opcode opcode, const std::initializer_list<Operand>& operands) :
-    opcode_(opcode), operands_{{}}, target_(-1) {
+    opcode_(opcode), operands_{{}}, target_(-1), is_movabsq_(false) {
     assert(operands.size() <= 4);
     std::copy(operands.begin(), operands.end(), operands_.begin());
     fix_operands_type();
@@ -128,7 +128,7 @@ public:
   /** Creates an instruction from an stl container of operands. */
   template <typename InItr>
   Instruction(Opcode opcode, InItr begin, InItr end) :
-    opcode_(opcode), operands_ {}, target_(-1) {
+    opcode_(opcode), operands_ {}, target_(-1), is_movabsq_(false) {
     assert(end - begin <= 4);
     std::copy(begin, end, operands_.begin());
     fix_operands_type();
@@ -142,6 +142,9 @@ public:
   /** Returns the target. */
   uint64_t get_target() const {
     return target_;
+  }
+  uint64_t is_movabsq() const {
+    return is_movabsq_;
   }
   /** Sets the current opcode. */
   void set_opcode(Opcode o) {
@@ -494,6 +497,17 @@ public:
     assert((size_t)get_opcode() < mem_index_.size());
     return mem_index_[get_opcode()];
   }
+  /** Returns the index of a immediate operand if present, -1 otherwise. */
+  int imm_index() const {
+    for (size_t i = 0; i < arity(); i++) {
+      const x64asm::Type instr_t = type(i);
+      if (is_type_immediate(instr_t)) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
   /** Returns the size of the memory dereference.  Assumes there is one. */
   int mem_dereference_size() const {
     assert(is_memory_dereference());
@@ -773,6 +787,7 @@ private:
   std::array<Operand, 4> operands_;
   /** Instruction Target for jmp/jcc/call **/
   uint64_t target_;
+  bool is_movabsq_;
 
   // Helper function for read_att that uses the fact that
   // Instruction is a friend of Operand to do the dirty work.
