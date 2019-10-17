@@ -70,7 +70,7 @@ istream& Sreg::read_att(istream& is) {
 
 ostream& Sreg::write_att(ostream& os) const {
   assert(check());
-  return (os << sregs_()[val_]);
+  return (os << "%" << sregs_()[val_]);
 }
 
 } // namespace x64asm
